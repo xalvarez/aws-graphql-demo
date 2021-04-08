@@ -1,0 +1,26 @@
+input CreateCustomerInput {
+	firstName: String!
+	lastName: String!
+	age: Int
+}
+
+type Customer {
+	id: ID!
+	firstName: String!
+	lastName: String!
+	age: Int
+}
+
+type Mutation {
+	createCustomer(input: CreateCustomerInput): Customer
+}
+
+type Query {
+	getCustomers: [Customer]
+	getCustomer(id: ID!): Customer
+}
+
+schema {
+	query: Query
+	mutation: Mutation
+}
