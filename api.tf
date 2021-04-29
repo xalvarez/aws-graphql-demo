@@ -33,7 +33,7 @@ resource "aws_appsync_resolver" "create_customer_resolver" {
     "key" : {
         "id": $util.dynamodb.toDynamoDBJson($util.autoId())
     },
-    "attributeValues" : $util.dynamodb.toMapValuesJson($ctx.args.input)
+    "attributeValues" : $util.dynamodb.toMapValuesJson($ctx.args)
 }
 EOF
 
