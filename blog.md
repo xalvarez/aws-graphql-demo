@@ -6,7 +6,7 @@ since 2005 and offers a graph based way to build APIs.
 Typically a graph defines a group
 of nodes that are related to each other and have certain attributes:
 
-<img style="max-width: 70%" src="images/graphql_example.png">
+<img style="max-width: 80%" src="images/graphql_example.png">
 
 The graph based approach allows API consumers to navigate through the different nodes and
 gather only the information they need, as opposed to REST APIs where response bodies are already defined. This implies that GraphQL is helpful when data can be easily represented
@@ -56,7 +56,7 @@ type Customer {
 ```
 
 As you can see, `id`, `firstName` and `lastName` have an exclamation mark (!) following
-their scalar types - that means that they are required fields whereas `age` is not.
+their scalar types - that denotes that they are required fields whereas `age` is not.
 
 Then, we need to specify our queries:
 
@@ -70,7 +70,7 @@ type Query {
 This means that `getCustomers` returns a collection of customers and `getCustomer`
 returns the customer matching the given id.
 
-Creating a customer is done by using so called _Mutations_:
+Creating a customer is done by using a so called _Mutation_:
 
 ```
 type Mutation {
@@ -101,11 +101,11 @@ sources including traditional databases such as DynamoDB, RDS or ElasticSearch a
 as Lambda or HTTP endpoints. We're going to use DynamoDB because it's a flexible easy to
 use database solution.
 
-First we will create the `Customers` DynamoDB table:
+First we navigate to the AWS DynamoDB service and create the `Customers` table:
 
 ![DynamoDB](images/06_dynamodb.png "DynamoDB")
 
-Then we will add the corresponding data source to AWS App Sync:
+Then we switch back to our AWS AppSync API to add the corresponding data source:
 
 ![create data source](images/07_datasource.png "create data source")
 
@@ -113,10 +113,10 @@ Then we will add the corresponding data source to AWS App Sync:
 
 ## Resolvers
 
-In order to tell AppSync how to interact with DynamoDB we need to define resolvers for
+In order to tell AppSync how to interact with our DynamoDB table we need to define resolvers for
 each query or mutation in our schema.
 
-Creating a resolver for Mutations or Queries can be done by clicking on
+Creating a resolver can be done by clicking on
 _Attach_ next to the method name.
 
 ![data source](images/09_resolvers.png "data source")
@@ -218,7 +218,7 @@ curl -X POST \
   -H 'Content-Type: application/json' \
   -H 'x-api-key: <api_key>' \
   -d '{"query":"mutation {createCustomer(firstName: \"Jane\", lastName: \"Doe\") {id}}"}' \
-  https://<graphql_api>.appsync-api.eu-central-1.amazonaws.com/graphql
+  https://<graphql_api_id>.appsync-api.eu-central-1.amazonaws.com/graphql
 ```
 
 
@@ -229,7 +229,7 @@ curl -X POST \
   -H 'Content-Type: application/json' \
   -H 'x-api-key: <api_key>' \
   -d '{"query":"{getCustomers {id, firstName, lastName, age}}"}' \
-  https://<graphql_api>.appsync-api.eu-central-1.amazonaws.com/graphql
+  https://<graphql_api_id>.appsync-api.eu-central-1.amazonaws.com/graphql
 ```
 
 **Retrieve a customer**
@@ -239,7 +239,7 @@ curl -X POST \
   -H 'Content-Type: application/json' \
   -H 'x-api-key: <api_key>' \
   -d '{"query":"{getCustomer(id: \"<customer_id>\") {id, firstName, lastName, age}}"}' \
-  https://<graphql_api>.appsync-api.eu-central-1.amazonaws.com/graphql
+  https://<graphql_api_id>.appsync-api.eu-central-1.amazonaws.com/graphql
 ```
 
 ## Conclusion
