@@ -1,4 +1,4 @@
-# To do title
+# Implementing a GraphQL API using AWS AppSync
 
 [GraphQL][1] is an exciting API specification that has been around
 since 2005 and offers a graph based way to build APIs.
@@ -6,15 +6,15 @@ since 2005 and offers a graph based way to build APIs.
 Typically a graph defines a group
 of nodes that are related to each other and have certain attributes:
 
-#####To do screenshot
+<img style="max-width: 70%" src="images/graphql_example.png">
 
 The graph based approach allows API consumers to navigate through the different nodes and
 gather only the information they need, as opposed to REST APIs where response bodies are already defined. This implies that GraphQL is helpful when data can be easily represented
 in a graph, otherwise it might not be the right solution.
 
-## Use case
+# Use case
 
-The aim of this blog post is to show how to get started with GraphQL using
+The aim of this blog post is to demonstrate how to get started with GraphQL using
 [AWS AppSync][2]. Quoting [AWS documentation][2]:
 
 > AWS AppSync is a fully managed service that makes it easy to develop GraphQL APIs by
@@ -24,19 +24,27 @@ The aim of this blog post is to show how to get started with GraphQL using
 To show you how it works we will implement a small API that creates and
 queries customer objects stored in a [DynamoDB table][3].
 
-In our use case customers have a first name, last name and age. We want
+In our use case customers have a first name, last name and an age. We want
 to be able to create them with an automatically generated ID as well as query the
 whole collection of customers and single customers.
 
-## Implementation
+# Implementation
 
-First of all we need to create an AppSync App
+First of all we need to create an AppSync App:
 
-#####all screenshots
+![AppSync overview](images/01_appsync.png "AppSync overview")
 
-### Schema
+![AppSync creation](images/02_appsync.png "AppSync creation")
 
-Now you're ready to start defining the API's schema. Let's start by creating a Customer:
+![AppSync name](images/03_appsync.png "AppSync name")
+
+## Schema
+
+Now you're ready to start defining the API's schema:
+
+![Edit schema](images/04_schema.png "Edit schema")
+
+Let's start by creating a Customer:
 
 ```
 type Customer {
@@ -48,7 +56,7 @@ type Customer {
 ```
 
 As you can see, `id`, `firstName` and `lastName` have an exclamation mark (!) following
-their scalar types - that means that they are required fields, and `age` is not.
+their scalar types - that means that they are required fields whereas `age` is not.
 
 Then, we need to specify our queries:
 
@@ -60,7 +68,7 @@ type Query {
 ```
 
 This means that `getCustomers` returns a collection of customers and `getCustomer`
-returns a customer based on its id.
+returns the customer matching the given id.
 
 Creating a customer is done by using so called _Mutations_:
 
@@ -71,27 +79,52 @@ type Mutation {
 ```
 
 Using the `createCustomer` Mutation with the mandatory parameters `firstName` and
-`lastName` and the optional `age` we can create a new customer.
+`lastName` and the optional parameter `age` we can create a new customer.
 
-### Data source
+Finally, both queries and mutations need to be specified in the schema:
+
+```
+schema {
+    query: Query
+    mutation: Mutation
+}
+```
+
+The complete schema should look like this:
+
+![schema](images/05_schema.png "schema")
+
+## Data source
 
 GraphQL itself does not provide any storage functionality. Data may come from different
 sources including traditional databases such as DynamoDB, RDS or ElasticSearch as well
 as Lambda or HTTP endpoints. We're going to use DynamoDB because it's a flexible easy to
 use database solution.
 
-####screenshots
+First we will create the `Customers` DynamoDB table:
 
-### Resolvers
+![DynamoDB](images/06_dynamodb.png "DynamoDB")
+
+Then we will add the corresponding data source to AWS App Sync:
+
+![create data source](images/07_datasource.png "create data source")
+
+![data source](images/08_datasource.png "data source")
+
+## Resolvers
 
 In order to tell AppSync how to interact with DynamoDB we need to define resolvers for
 each query or mutation in our schema.
 
-###screenshots
+Creating a resolver for Mutations or Queries can be done by clicking on
+_Attach_ next to the method name.
 
-Let's start by creating a resolver for the Mutation `createCustomer` by clicking on
-_Attach_ next to the method name. In the new window we need to select `Customers`
+![data source](images/09_resolvers.png "data source")
+
+Afterwards we need to select `Customers`
 as data source and configure the mapping templates as follows:
+
+### createCustomer
 
 **Request mapping template:**
 
@@ -115,6 +148,8 @@ $util.toJson($ctx.result)
 This way a new customer will be created using the given parameters and automatically
 generated Id. As a response we'll receive the created customer.
 
+### getCustomers
+
 Getting all customers can be done by scanning the DynamoDB table:
 
 **Request mapping template:**
@@ -133,6 +168,8 @@ $util.toJson($ctx.result.items)
 ```
 
 which will return the whole collection of customers.
+
+### getCustomer
 
 Finally, this is how you can get a single customer:
 
@@ -158,7 +195,7 @@ $util.toJson($ctx.result)
 
 You can test your API by using the built-in Queries tool:
 
-##screenshot
+![testing](images/10_testing.png "testing")
 
 In this example we created a new customer called "Jane Doe" and afterwards we queried
 all customers.
@@ -215,7 +252,7 @@ It's a promising fast growing technology which is already widely used by big
 tech players such as GitHub, Twitter or Facebook.
 
 As we have seen in this article, there's already good tooling available in the market
-to deliver and consume GraphQL APIs such as AppSync.
+to deliver and consume GraphQL APIs.
 
 If you want to see a more detailed terraform automated way to implement what is
 described here you are welcome to check out this GitHub repository: [aws-graphql-demo][4].
