@@ -24,9 +24,9 @@ The aim of this blog post is to demonstrate how to get started with GraphQL usin
 To show you how it works we will implement a small API that creates and
 queries customer objects stored in a [DynamoDB table][3].
 
-In our use case customers have a first name, last name and an age. We want
+In our use case, customers have a first name, last name and an age. We want
 to be able to create them with an automatically generated ID as well as query the
-whole collection of customers and single customers.
+whole collection of customers and individual customers.
 
 # Implementation
 
@@ -40,7 +40,7 @@ First of all we need to create an AppSync App:
 
 ## Schema
 
-Now you're ready to start defining the API's schema:
+Now we're ready to start defining the API's schema:
 
 ![Edit schema](images/04_schema.png "Edit schema")
 
@@ -97,7 +97,7 @@ The complete schema should look like this:
 ## Data source
 
 GraphQL itself does not provide any storage functionality. Data may come from different
-sources including traditional databases such as DynamoDB, RDS or ElasticSearch as well
+sources including databases such as DynamoDB, RDS or ElasticSearch as well
 as Lambda or HTTP endpoints. We're going to use DynamoDB because it's a flexible easy to
 use database solution.
 
@@ -171,7 +171,7 @@ which will return the whole collection of customers.
 
 ### getCustomer
 
-Finally, this is how you can get a single customer:
+Finally, this is how to retrieve a single customer:
 
 **Request mapping template:**
 
@@ -193,7 +193,7 @@ $util.toJson($ctx.result)
 
 ## Testing the API
 
-You can test your API by using the built-in Queries tool:
+The API can be tested using the built-in Queries tool:
 
 ![testing](images/10_testing.png "testing")
 
@@ -202,14 +202,14 @@ all customers.
 
 ### Authorization
 
-As you saw in the previous screenshot, we're using an API key that is created by AppSync
-by default to authorize our requests. However, you can choose among multiple authorization
+As the previous screenshot shows, we're using an API key that is created by AppSync
+by default to authorize our requests. However, it is possible to choose among multiple authorization
 options including IAM and OpenID Connect.
 
 ### cURL examples
 
-Using the desired authorization method you can now use your API from anywhere you need,
-e.g. using cURL.
+Using the desired authorization method you can now invoke your API from wherever you want,
+e.g. with cURL.
 
 **Creating a customer**
 
